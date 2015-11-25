@@ -1,5 +1,6 @@
 package Controller;
 
+import domain.News;
 import sun.plugin2.message.GetAppletMessage;
 
 import javax.servlet.ServletException;
@@ -28,7 +29,7 @@ public class NewsController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=GBK");
         String action = request.getParameter("action");
-
+        System.out.println(action);
         if (action.equals("getNewsList")) {
             // 获取新闻列表
             String type=request.getParameter("newsType");
@@ -36,19 +37,21 @@ public class NewsController extends HttpServlet {
             getNewsList(request,response,type);
         }else if(action.equals("getNewsById")){
             // 获取新闻内容
-            getNewsById(request,response);
+            String newsid=request.getParameter("newsId");
+            System.out.println(newsid);
+            getNewsById(request,response,newsid);
         }
     }
 
 
     // 吧获取到的新闻转化到html
-    private String listToHTML(List<String> list){
+    private String listToHTML(List<News> list){
         StringBuilder str=new StringBuilder("<ul>");
         for(int i=0;i<list.size();i++){
             str.append("<li>");
-            str.append("<a id=\""+i+"\" " +"class=\"list-group-item\""+
-                    "href=\"newsDetail.jsp?id=abc\">");
-            str.append(list.get(i));
+            str.append("<a id=\""+list.get(i).getId()+"\" " +"class=\"list-group-item\""+
+                    "href=\"newsDetail.jsp\">");
+            str.append(list.get(i).getTitle());
             str.append("</a>");
             str.append("</li>");
         }
@@ -68,17 +71,19 @@ public class NewsController extends HttpServlet {
     private void getNewsList(HttpServletRequest request, HttpServletResponse response,
                              String type)
             throws ServletException, IOException {
-        List<String> list=new ArrayList<String>();
+        List<News> list= domain.NewsController.findNewsByCategory(type);
+
+        System.out.println(list.size());
         PrintWriter out=response.getWriter();
-        if(type.equals("0")){
-            list.add("a");
-            list.add("bb");
-            list.add("ccc");
-        }else{
-            list.add("zzzzzzz");
-            list.add("ccccccccccccccccc");
-            list.add("bbbbbbbbbbbbb");
-        }
+//        if(type.equals("0")){
+//            list.add("a");
+//            list.add("bb");
+//            list.add("ccc");
+//        }else{
+//            list.add("zzzzzzz");
+//            list.add("ccccccccccccccccc");
+//            list.add("bbbbbbbbbbbbb");
+//        }
         String res = listToHTML(list);
         out.println(res);
         out.close();	//关闭输出流对象
@@ -92,19 +97,22 @@ public class NewsController extends HttpServlet {
      * @throws ServletException
      * @throws IOException
      */
-    private void getNewsById(HttpServletRequest request, HttpServletResponse response)
+    private void getNewsById(HttpServletRequest request, HttpServletResponse response,
+                             String newsid)
             throws ServletException, IOException{
         PrintWriter out=response.getWriter();
         System.out.println("Getnews");
-        String res=newsToHTML();
+        News news=domain.NewsController.findNewsById(newsid);
+        String res=newsToHTML(news);
         out.print(res);
         out.flush();
         out.close();
     }
     // 获取到的新闻转换到HTML
-    private String newsToHTML(){
+    private String newsToHTML(News news){
         StringBuilder str=new StringBuilder("<h1>");
-        str.append("news news news news news news news news news news news ");
+        str.append(news.getContent());
+//        str.append("news news news news news news news news news news news ");
         str.append("</h1>");
         return str.toString();
     }

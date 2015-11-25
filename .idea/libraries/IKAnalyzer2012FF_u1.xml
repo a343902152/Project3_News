@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="IKAnalyzer2012FF_u1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/IKAnalyzer2012FF_u1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jsoup-1.8.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lucene-core-4.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lucene-demo-4.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lucene-queryparser-4.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

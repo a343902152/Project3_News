@@ -15,41 +15,89 @@
 
 	<script type="text/javascript" src="JS/jquery-1.9.1.js"></script>
 	<script type="text/javascript" src="JS/jquery.mobile-1.4.4.js"></script>
+	<!--<script type="text/javascript">-->
+		<!--localStorage.newsType ="00";-->
+		<!--localStorage.newsId="";-->
+<!--//-->
+<!--//		// fixme 用create不会多次load，但是点击标题进入新闻详情会有问题-->
+<!--//		$(document).on("pagecreate",function(){ // 加不加page1效果好像差不多-->
+		<!--$(document).on("pagecreate","#page1",function(){-->
+			<!--alert("create");-->
+			<!--$(".active").click(function(){-->
+				<!--localStorage.newsType = $(this).attr("id");-->
+				<!--alert(localStorage.newsType);-->
+				<!--loadNews();-->
+			<!--});-->
+			<!--loadNews();-->
+		<!--});-->
+
+<!--//		 FIXME 加载完毕时，点击active时会loadnews两次，新闻详情没有问题-->
+<!--//		$(document).ready(function() {-->
+<!--//			alert("ready");-->
+<!--//			$(".active").click(function(){-->
+<!--//				localStorage.categoryId = $(this).attr("id");-->
+<!--//				alert(localStorage.categoryId);-->
+<!--//				// FIXME 每次click都会读取两次数据？？？-->
+<!--////				// 随机分配新闻type-->
+<!--////				if(Math.random()>0.5)-->
+<!--////					localStorage.newsType="00";-->
+<!--////				else-->
+<!--////					localStorage.newsType="46";-->
+<!--//				loadNews();-->
+<!--//			});-->
+<!--//			loadNews();-->
+<!--//		});-->
+
+		<!--/**-->
+		 <!--* 清空content，写入新数据-->
+		 <!--*/-->
+		<!--function loadNews(){-->
+			<!--$.ajax({-->
+				<!--url:"controller",-->
+				<!--type:"GET",-->
+				<!--data:{-->
+					<!--"action":"getNewsList",-->
+					<!--"newsType":localStorage.newsType=$(this).attr("id")-->
+				<!--},-->
+				<!--success:function(data){-->
+					<!--// 更新到界面上-->
+					<!--$("#content").html(data);-->
+					<!--$.("li").click(function () {-->
+						<!--localStorage.newsid=$(this).attr("id")-->
+						<!--alert(localStorage.newsid);-->
+					<!--})-->
+				<!--},-->
+				<!--error: function(){-->
+<!--//				alert("请求失败，请刷新重试");-->
+				<!--}-->
+			<!--});-->
+		<!--}-->
+	<!--</script>-->
 	<script type="text/javascript">
-		localStorage.newsType ="0";
+		localStorage.newsType ="00";
 		localStorage.newsId="";
 
-		// fixme 用create不会多次load，但是点击标题进入新闻详情会有问题
-		$(document).on("pagecreate",function(){ // 加不加page1效果好像差不多
-//		$(document).on("pagecreate","#page1",function(){
-			alert("oncreate");
-			$(".active").click(function(){
-				if(Math.random()>0.5)
-					localStorage.newsType="0";
-				else
-					localStorage.newsType="1";
-				loadNews();
-			});
-			loadNews();
-		});
+//		// fixme 用create不会多次load，但是点击标题进入新闻详情会有问题
+//		$(document).on("pagecreate",function(){ // 加不加page1效果好像差不多
+//			alert("oncreate");
+//			$(".active").click(function(){
+//				localStorage.newsType = $(this).attr("id");
+//				alert(localStorage.newsType);
+//				loadNews();
+//			});
+//			loadNews();
+//		});
 		// FIXME 加载完毕时，点击active时会loadnews两次，新闻详情没有问题
 		$(document).ready(function() {
 			alert("ready");
 			$(".active").click(function(){
-				// FIXME 每次click都会读取两次数据？？？
-				// 随机分配新闻type
-				if(Math.random()>0.5)
-					localStorage.newsType="0";
-				else
-					localStorage.newsType="1";
+				localStorage.newsType = $(this).attr("id");
+				alert(localStorage.newsType);
 				loadNews();
 			});
 			loadNews();
 		});
 
-		//	$(document).on("pagebeforeshow","#page1",function(){
-		//		alert("pagebeforeshow");
-		//	});
 
 		/**
 		 * 清空content，写入新数据
@@ -65,6 +113,10 @@
 				success:function(data){
 					// 更新到界面上
 					$("#content").html(data);
+					$("a").click(function () {
+						localStorage.newsId=$(this).attr("id");
+						alert(localStorage.newsId);
+					})
 				},
 				error: function(){
 //				alert("请求失败，请刷新重试");
@@ -79,20 +131,14 @@
 
 <div class="fake-header"></div>
 
-
 <header class="navbar-fixed-top">
 
-
-
 	<div class=" am-container navbar "  >
-		<a href="" class="logo"><img src=""></a>
-		<a href="" class="active">标题测试标</a>
-		<a href="" class="active">标题测试</a>
-		<a href="" class="active">标题测试标题</a>
+		<a href="#" class="logo"><img src=""></a>
+		<a href="#" class="active" id="00">标题测试标</a>
+		<a href="#" class="active" id="46">标题测试</a>
+		<a href="#" class="active" id="53">标题测试标题</a>
 
-
-
-		
     <div class="input-group search">
 		<input type="text" class="form-control" placeholder="Search for...">
 		<span class="input-group-btn">

@@ -20,5 +20,59 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Tomcat 8.0.28" level="application_server_libraries" />
+    <orderEntry type="module-library">
+      <library name="IKAnalyzer2012FF_u1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/web/WEB-INF/lib/IKAnalyzer2012FF_u1.jar!/" />
+          <root url="jar://$MODULE_DIR$/web/WEB-INF/lib/jsoup-1.8.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/web/WEB-INF/lib/lucene-core-4.0.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/web/WEB-INF/lib/lucene-demo-4.0.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/web/WEB-INF/lib/lucene-queryparser-4.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jsoup-1.8.1">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/web/WEB-INF/lib/jsoup-1.8.11.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="lucene-core-4.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/web/WEB-INF/lib/lucene-core-4.0.01.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="lucene-demo-4.0">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/web/WEB-INF/lib/lucene-demo-4.0.01.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="lucene-queryparser-4.0.0" level="project" />
+    <orderEntry type="module-library">
+      <library name="spring">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/spring.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/spring.jar" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/spring.jar" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/spring.jar" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
 </module>
