@@ -18,71 +18,82 @@
 		localStorage.newsType ="00";
 		localStorage.newsId="";
 		localStorage.searchKey="";
-
 		/**
 		 * 根据输入的关键字，搜索新闻
 		 */
 		function searchNews(){
 			$.ajax({
 				url:"controller",
-				type:"GET",
+				type:"POST",
 				data:{
 					"action":"serachNews",
 					"key":localStorage.searchKey
 				},
 				success:function(data){
 					// 更新到界面上
-					$("#content").html(data);
+					$("#content").empty();
+					var jsonObj=eval("("+data+")");
+					$.each(jsonObj, function (i, item) {
+						var id=jsonObj[i].id;
+						var title=jsonObj[i].title;
+						var link="<li><a id=\'"+id+"\' class=\"list-group-item\" href=\"newsDetail.html\">"+title+
+								"</a></li>";
+						$("#content").append(link);
+					});
 					$("a").click(function () {
 						localStorage.newsId=$(this).attr("id");
-//						alert(localStorage.newsId);
 					})
 				},
 				error: function(){
-//				alert("请求失败，请刷新重试");
+					alert("请求失败，请稍候重试");
 				}
 			});
 		}
 
 		/**
-		 * 清空content，写入新数据
+		 * 新的读取新闻的方法
+		 * 获取json格式的新闻list
+		 * 在前端变成html
+		 * @constructor
 		 */
-		function loadNews(){
+		function newLoadNews(){
 			$.ajax({
 				url:"controller",
-				type:"GET",
+				type:"POST",
 				data:{
 					"action":"getNewsList",
 					"newsType":localStorage.newsType
 				},
 				success:function(data){
-					// 更新到界面上
-					$("#content").html(data);
+					$("#content").empty();
+					var jsonObj=eval("("+data+")");
+					$.each(jsonObj, function (i, item) {
+						var id=jsonObj[i].id;
+						var title=jsonObj[i].title;
+						var link="<li><a id=\'"+id+"\' class=\"list-group-item\" href=\"newsDetail.html\">"+title+
+										"</a></li>";
+						$("#content").append(link);
+					});
 					$("a").click(function () {
 						localStorage.newsId=$(this).attr("id");
-//						alert(localStorage.newsId);
 					})
 				},
 				error: function(){
-//				alert("请求失败，请刷新重试");
+					alert("请求失败，请稍候重试");
 				}
 			});
 		}
 
-
 		$(document).ready(function() {
-//			alert("ready");
 			$("#btnGo").click(function(){
 				localStorage.searchKey=$("#txtKey").val();
-//				alert(localStorage.searchKey);
 				searchNews();
 			});
 			$(".active").click(function(){
 				localStorage.newsType = $(this).attr("id");
-//				alert(localStorage.newsType);
-				loadNews();
+				newLoadNews();
 			});
-			loadNews();
+			newLoadNews();
 		});
 
 

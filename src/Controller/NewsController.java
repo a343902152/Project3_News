@@ -1,5 +1,6 @@
 package Controller;
 
+import com.google.gson.Gson;
 import domain.IndexManager;
 import domain.News;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +37,7 @@ public class NewsController extends HttpServlet {
             // 获取新闻列表
             String type=request.getParameter("newsType");
             System.out.println(type);
-            getNewsList(request,response,type);
+            getNewsList(request, response, type);
         }else if(action.equals("getNewsById")){
             // 获取新闻内容
             String newsid=request.getParameter("newsId");
@@ -51,6 +52,7 @@ public class NewsController extends HttpServlet {
 
     /**
      * 查找新闻
+     * 返回json格式的news
      * @param request
      * @param response
      * @param key
@@ -59,9 +61,9 @@ public class NewsController extends HttpServlet {
                                  String key){
         try{
             PrintWriter out=response.getWriter();
-
             List<News> list=indexManager.searchIndex(key);
-            String res=listToHTML(list);
+            Gson gson=new Gson();
+            String res= gson.toJson(list);
 
             out.println(res);
             out.flush();
@@ -70,49 +72,6 @@ public class NewsController extends HttpServlet {
             e.printStackTrace();
         }
     }
-
-    /**
-     * 获取新闻列表
-     * @param request
-     * @param response
-     * @throws ServletException
-     * @throws IOException
-     */
-    private void getNewsList(HttpServletRequest request, HttpServletResponse response,
-                             String type) {
-        try{
-            PrintWriter out=response.getWriter();
-
-            // 查找新闻
-            List<News> list= domain.NewsController.findNewsByCategory(type);
-            // 建立索引
-            indexManager.buildIndexByType(list,type);
-
-            String res = listToHTML(list);
-
-            out.println(res);
-            out.flush();
-            out.close();	//关闭输出流对象
-        }catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    }
-
-    // 吧获取到的新闻list转化到html
-    private String listToHTML(List<News> list){
-        StringBuilder str=new StringBuilder("<ul>");
-        for(int i=0;i<list.size();i++){
-            str.append("<li>");
-            str.append("<a id=\""+list.get(i).getId()+"\" " +"class=\"list-group-item\""+
-                    "href=\"newsDetail.html\">");
-            str.append(list.get(i).getTitle());
-            str.append("</a>");
-            str.append("</li>");
-        }
-        str.append("</ul>");
-        return str.toString();
-    }
-
 
     /**
      * 根据ID获取新闻内容+图片
@@ -143,11 +102,29 @@ public class NewsController extends HttpServlet {
         return str.toString();
     }
 
-    @RequestMapping(value="/test.do")
-    public List<News> test(String newsType)
-    {
-        System.out.println("testDo");
-        List<News> list= domain.NewsController.findNewsByCategory(newsType);
-        return list;
+    /**
+     * 吧新闻list转化成json传递到前端
+     * @param request
+     * @param response
+     * @param type
+     */
+    public void getNewsList(HttpServletRequest request, HttpServletResponse response,String type) {
+        try {
+            PrintWriter out = response.getWriter();
+
+            // 查找新闻
+            List<News> list = domain.NewsController.findNewsByCategory(type);
+            // 建立索引
+            indexManager.buildIndexByType(list, type);
+            Gson gson=new Gson();
+            String res=gson.toJson(list);
+            System.out.println(res);
+
+            out.println(res);
+            out.flush();
+            out.close();    //关闭输出流对象
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 }
