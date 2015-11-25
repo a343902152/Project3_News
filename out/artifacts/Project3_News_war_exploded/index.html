@@ -14,90 +14,35 @@
 	<link rel="stylesheet" href="./static/css/main.css">
 
 	<script type="text/javascript" src="JS/jquery-1.9.1.js"></script>
-	<script type="text/javascript" src="JS/jquery.mobile-1.4.4.js"></script>
-	<!--<script type="text/javascript">-->
-		<!--localStorage.newsType ="00";-->
-		<!--localStorage.newsId="";-->
-<!--//-->
-<!--//		// fixme 用create不会多次load，但是点击标题进入新闻详情会有问题-->
-<!--//		$(document).on("pagecreate",function(){ // 加不加page1效果好像差不多-->
-		<!--$(document).on("pagecreate","#page1",function(){-->
-			<!--alert("create");-->
-			<!--$(".active").click(function(){-->
-				<!--localStorage.newsType = $(this).attr("id");-->
-				<!--alert(localStorage.newsType);-->
-				<!--loadNews();-->
-			<!--});-->
-			<!--loadNews();-->
-		<!--});-->
-
-<!--//		 FIXME 加载完毕时，点击active时会loadnews两次，新闻详情没有问题-->
-<!--//		$(document).ready(function() {-->
-<!--//			alert("ready");-->
-<!--//			$(".active").click(function(){-->
-<!--//				localStorage.categoryId = $(this).attr("id");-->
-<!--//				alert(localStorage.categoryId);-->
-<!--//				// FIXME 每次click都会读取两次数据？？？-->
-<!--////				// 随机分配新闻type-->
-<!--////				if(Math.random()>0.5)-->
-<!--////					localStorage.newsType="00";-->
-<!--////				else-->
-<!--////					localStorage.newsType="46";-->
-<!--//				loadNews();-->
-<!--//			});-->
-<!--//			loadNews();-->
-<!--//		});-->
-
-		<!--/**-->
-		 <!--* 清空content，写入新数据-->
-		 <!--*/-->
-		<!--function loadNews(){-->
-			<!--$.ajax({-->
-				<!--url:"controller",-->
-				<!--type:"GET",-->
-				<!--data:{-->
-					<!--"action":"getNewsList",-->
-					<!--"newsType":localStorage.newsType=$(this).attr("id")-->
-				<!--},-->
-				<!--success:function(data){-->
-					<!--// 更新到界面上-->
-					<!--$("#content").html(data);-->
-					<!--$.("li").click(function () {-->
-						<!--localStorage.newsid=$(this).attr("id")-->
-						<!--alert(localStorage.newsid);-->
-					<!--})-->
-				<!--},-->
-				<!--error: function(){-->
-<!--//				alert("请求失败，请刷新重试");-->
-				<!--}-->
-			<!--});-->
-		<!--}-->
-	<!--</script>-->
 	<script type="text/javascript">
 		localStorage.newsType ="00";
 		localStorage.newsId="";
+		localStorage.searchKey="";
 
-//		// fixme 用create不会多次load，但是点击标题进入新闻详情会有问题
-//		$(document).on("pagecreate",function(){ // 加不加page1效果好像差不多
-//			alert("oncreate");
-//			$(".active").click(function(){
-//				localStorage.newsType = $(this).attr("id");
-//				alert(localStorage.newsType);
-//				loadNews();
-//			});
-//			loadNews();
-//		});
-		// FIXME 加载完毕时，点击active时会loadnews两次，新闻详情没有问题
-		$(document).ready(function() {
-			alert("ready");
-			$(".active").click(function(){
-				localStorage.newsType = $(this).attr("id");
-				alert(localStorage.newsType);
-				loadNews();
+		/**
+		 * 根据输入的关键字，搜索新闻
+		 */
+		function searchNews(){
+			$.ajax({
+				url:"controller",
+				type:"GET",
+				data:{
+					"action":"serachNews",
+					"key":localStorage.searchKey
+				},
+				success:function(data){
+					// 更新到界面上
+					$("#content").html(data);
+					$("a").click(function () {
+						localStorage.newsId=$(this).attr("id");
+//						alert(localStorage.newsId);
+					})
+				},
+				error: function(){
+//				alert("请求失败，请刷新重试");
+				}
 			});
-			loadNews();
-		});
-
+		}
 
 		/**
 		 * 清空content，写入新数据
@@ -115,7 +60,7 @@
 					$("#content").html(data);
 					$("a").click(function () {
 						localStorage.newsId=$(this).attr("id");
-						alert(localStorage.newsId);
+//						alert(localStorage.newsId);
 					})
 				},
 				error: function(){
@@ -123,6 +68,43 @@
 				}
 			});
 		}
+
+		function testLoad(){
+			alert("testLoad");
+			$.ajax({
+				url:"test.do",
+				data:{
+					"newsType":localStorage.newsType
+				},
+				success:function(result){
+					alert(result.length);
+					// 更新到界面上
+//					$("#content").html(data);
+//					$("a").click(function () {
+//						localStorage.newsId=$(this).attr("id");
+////						alert(localStorage.newsId);
+//					})
+				},
+				error: function(){
+//				alert("请求失败，请刷新重试");
+				}
+			});
+		}
+
+		$(document).ready(function() {
+//			alert("ready");
+			$("#btnGo").click(function(){
+				localStorage.searchKey=$("#txtKey").val();
+//				alert(localStorage.searchKey);
+				searchNews();
+			});
+			$(".active").click(function(){
+				localStorage.newsType = $(this).attr("id");
+//				alert(localStorage.newsType);
+				loadNews();
+			});
+			loadNews();
+		});
 
 
 	</script>
@@ -140,9 +122,9 @@
 		<a href="#" class="active" id="53">标题测试标题</a>
 
     <div class="input-group search">
-		<input type="text" class="form-control" placeholder="Search for...">
+		<input id="txtKey" type="text" class="form-control" placeholder="Search for...">
 		<span class="input-group-btn">
-			<button class="btn btn-default" type="button">Go!</button>
+			<button id="btnGo" class="btn btn-default" type="button">Go!</button>
 		</span>
     </div>
 		
@@ -157,22 +139,7 @@
 <div class="wrapper am-g am-g-fixed am-container" >
 	<div class="main">
 		<ul id="content" class="list-group no-radius">
-			<!--<a href="#" class="list-group-item">Dapibus ac facilisis in</a>-->
-			<!--<a href="#" class="list-group-item">Morbi leo risus</a>-->
-			<!--<a href="#" class="list-group-item">Porta ac consectetur ac</a>-->
-			<!--<a href="#" class="list-group-item">Vestibulum at eros</a>-->
-			<!--<a href="#" class="list-group-item">Dapibus ac facilisis in</a>-->
-			<!--<a href="#" class="list-group-item">Morbi leo risus</a>-->
-			<!--<a href="#" class="list-group-item">Porta ac consectetur ac</a>-->
-			<!--<a href="#" class="list-group-item">Vestibulum at eros</a>-->
-			<!--<a href="#" class="list-group-item">Dapibus ac facilisis in</a>-->
-			<!--<a href="#" class="list-group-item">Morbi leo risus</a>-->
-			<!--<a href="#" class="list-group-item">Porta ac consectetur ac</a>-->
-			<!--<a href="#" class="list-group-item">Vestibulum at eros</a>-->
-			<!--<a href="#" class="list-group-item">Dapibus ac facilisis in</a>-->
-			<!--<a href="#" class="list-group-item">Morbi leo risus</a>-->
-			<!--<a href="#" class="list-group-item">Porta ac consectetur ac</a>-->
-			<!--<a href="#" class="list-group-item">Vestibulum at eros</a>-->
+
 		</ul>
 	</div>
 </div>
