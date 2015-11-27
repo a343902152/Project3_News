@@ -1,5 +1,6 @@
 package domain;
 
+
 /**
  * Created by lenovo on 2015/11/20.
  */
@@ -7,7 +8,26 @@ public class News {
     private String id;
     private String title;
     private String content;
+    private String author;
+    private String date;
     private String img;
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public String getTitle() {
         return title;
     }

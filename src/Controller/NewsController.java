@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by hp on 2015/11/24.
@@ -47,6 +48,10 @@ public class NewsController extends HttpServlet {
             String key=request.getParameter("key");
             System.out.println(key);
             searchNewsByKey(request,response,key);
+        }else if(action.equals("getNewsByPage")){
+            String pagenum=request.getParameter("pagenum");
+            System.out.println("pagenum="+pagenum);
+            getNewsByPage(response,Integer.valueOf(pagenum));
         }
     }
 
@@ -84,8 +89,14 @@ public class NewsController extends HttpServlet {
         try{
             PrintWriter out=response.getWriter();
             System.out.println("Getnews");
+
+            List<News> list=new ArrayList<News>();
             News news=domain.NewsController.findNewsById(newsid);
-            String res=newsToHTML(news);
+            list.add(news);
+            Gson gson =new Gson();
+            String res=gson.toJson(list);
+
+            System.out.println("news detail"+res);
             out.print(res);
             out.flush();
             out.close();
@@ -93,14 +104,19 @@ public class NewsController extends HttpServlet {
             e.printStackTrace();
         }
     }
-    // 获取到的新闻转换到HTML
-    private String newsToHTML(News news){
-        StringBuilder str=new StringBuilder("<h1>");
-        str.append(news.getContent());
-//        str.append("news news news news news news news news news news news ");
-        str.append("</h1>");
-        return str.toString();
-    }
+//    // 获取到的新闻转换到HTML
+//    private String newsToHTML(News news){
+//        StringBuilder str=new StringBuilder("<h1>");
+//        str.append(news.getContent());
+////        str.append("news news news news news news news news news news news ");
+//        str.append("</h1>");
+//        return str.toString();
+//    }
+
+    /**
+     * 存放一页一页的新闻
+     */
+    private Vector<List<News>> newsVector=new Vector<List<News>>();
 
     /**
      * 吧新闻list转化成json传递到前端
@@ -116,15 +132,51 @@ public class NewsController extends HttpServlet {
             List<News> list = domain.NewsController.findNewsByCategory(type);
             // 建立索引
             indexManager.buildIndexByType(list, type);
-            Gson gson=new Gson();
-            String res=gson.toJson(list);
-            System.out.println(res);
 
-            out.println(res);
-            out.flush();
-            out.close();    //关闭输出流对象
+            int perPageCount=30;
+            int pages=(list.size()+perPageCount-1)/perPageCount;
+            newsVector.clear();
+            for(int i=0;i<pages-1;i++)
+            {
+                newsVector.add(list.subList(perPageCount*i,
+                        perPageCount*(i+1)-1));
+            }
+            newsVector.add(
+                    list.subList(perPageCount*(pages-1),list.size()-1));
+
+            System.out.println("vecter size="+newsVector.size());
+//            out.println(pages);
+            getNewsByPage(response,0);
+
+//            List<News> list = new ArrayList<News>();
+//            list.add(new News("id1","title1","content1","img1"));
+//            list.add(new News("id2","title2","content2","img2"));
+//            list.add(new News("id3","title3","content3","img3"));
+//            Gson gson=new Gson();
+//            String res=gson.toJson(list);
+//            System.out.println(res);
+
+//            out.println(res);
+//            out.flush();
+//            out.close();    //关闭输出流对象
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+    }
+    public void getNewsByPage( HttpServletResponse response,int pagenum){
+        try{
+            PrintWriter out=response.getWriter();
+
+            Gson gson=new Gson();
+            String res=gson.toJson(newsVector.get(pagenum));
+            System.out.println("get page,pagenum="+pagenum+
+                    "res="+res);
+            out.println(res);
+            out.flush();
+            out.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }

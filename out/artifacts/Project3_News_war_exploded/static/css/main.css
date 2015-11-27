@@ -30,13 +30,16 @@ header{
 	transition: background-color 0.2s;
 }
 .navbar a.active{
-	background-color: #777;
+	background-color: #00BFA5;
 	color: white;
 	height: 75px;
-	border-bottom: 5px solid blue;
+	border-bottom: 5px solid #283593;
+}
+.detail .navbar a.active{
+	border-bottom: 5px solid #FFEB3B;
 }
 .navbar a:hover{
-	background-color: #888;
+	background-color: #03A9F4;
 	color: white;
 }
 .no-radius>a{
@@ -63,4 +66,31 @@ header{
 	margin-top: 18px;
 	width: 200px;
 	float: right;
+}
+.main nav{
+	text-align: center;
+}
+.main nav .pagination{
+	margin-top: 5px;
+}
+.main .am-breadcrumb{
+	margin-bottom: 0;
+	padding: 0!important;
+}
+.main .title{
+	font-size: 20px;
+	text-align: center;
+	line-height: 40px;
+}
+.main .info{
+	width: 100%;
+}
+.main .time, .main .site{
+	font-size: 15px;
+	text-align: right;
+	line-height: 20px;
+	float: right;
+	margin-top: 0;
+	margin-right: 10px;
+	color: #777
 }

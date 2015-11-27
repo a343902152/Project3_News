@@ -1,0 +1,226 @@
+<!doctype html>
+<html class="no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>Java Exp</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="Cache-Control" content="no-siteapp"/>
+	<link rel="stylesheet" href="./static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./static/css/amazeui.min.css">
+	<link rel="stylesheet" href="./static/css/main.css">
+
+	<script type="text/javascript" src="JS/jquery-1.9.1.js"></script>
+	<script type="text/javascript">
+		/**
+		 * 读取新闻成功后，将新闻更新到界面上
+		 * 接受到的是json格式的内容，需要转换成html
+		 */
+		function newsJsonToHtml(data){
+			$("#content").empty();
+			var jsonObj=eval("("+data+")");
+			$.each(jsonObj, function (i, item) {
+				var id=jsonObj[i].id;
+				var title=jsonObj[i].title;
+				var link="<li><a id=\'"+id+"\' class=\"list-group-item\" href=\"detail.html\">"+title+
+						"</a></li>";
+				$("#content").append(link);
+			});
+			$("a").click(function () {
+				localStorage.newsId=$(this).attr("id");
+			})
+		}
+
+		/**
+		 * 计算总的页数、当前页数
+		 */
+		function getPages(){
+			// 动态添加页数
+			var pagescount=15;
+			$("#pages").empty();
+			for(var i=0;i<pagescount;i++){
+				if(i==localStorage.pagenum){
+					var link="<li class=\"active\"><a id=\'"+i+"\' href=\"#\">"+(i+1)+"</a></li>";
+				}else{
+					var link="<li id=\'"+i+"\'><a href=\"#\">"+(i+1)+"</a></li>";
+				}
+				$("#pages").append(link);
+			}
+			// 关于点击页标的
+			$("#pages li").click(function() {
+				$(this).siblings('li').removeClass('active');  // 删除其他兄弟元素的样式
+				$(this).addClass('active');                            // 添加当前元素的样式
+
+				localStorage.pagenum = $(this).attr("id");
+				loadnewsByPage();
+			});
+		}
+	</script>
+	<script type="text/javascript">
+		localStorage.newsType ="00";
+		localStorage.newsId="";
+		localStorage.searchKey="";
+		localStorage.pagenum=0;
+
+		/**
+		 * 根据输入的关键字，搜索新闻
+		 */
+		function searchNews(){
+			$.ajax({
+				url:"controller",
+				type:"POST",
+				data:{
+					"action":"serachNews",
+					"key":localStorage.searchKey
+				},
+				success:function(data){
+					newsJsonToHtml(data);
+					$("#pages").empty();
+//					getPages();
+				},
+				error: function(){
+					alert("请求失败，请稍候重试");
+				}
+			});
+		}
+
+		/**
+		 * 根据点击的页数，获取对应页的新闻
+		 *
+		 */
+		function loadnewsByPage(){
+			$.ajax({
+				url:"controller",
+				type:"POST",
+				data:{
+					"action":"getNewsByPage",
+					"pagenum":localStorage.pagenum
+				},
+				success:function(data){
+					newsJsonToHtml(data);
+					getPages();
+				},
+				error: function(){
+					alert("请求失败，请稍候重试");
+				}
+			});
+		}
+
+		/**
+		 * 新的读取新闻的方法
+		 * 获取json格式的新闻list
+		 * 在前端变成html
+		 *
+		 * 输入：新闻type
+		 * 输出：1. 新闻页数
+		 * 		2. News(id+title)
+		 *
+		 * 	注意只能显示当前页的news
+		 * @constructor
+		 */
+		function newLoadNews(){
+			$.ajax({
+				url:"controller",
+				type:"POST",
+				data:{
+					"action":"getNewsList",
+					"newsType":localStorage.newsType
+				},
+				success:function(data){
+					newsJsonToHtml(data);
+					getPages();
+				},
+				error: function(){
+					alert("请求失败，请稍候重试");
+				}
+			});
+		}
+
+
+		$(document).ready(function() {
+			$("#btnGo").click(function(){
+				localStorage.searchKey=$("#txtKey").val();
+				searchNews();
+			});
+			$("#newsType a").click(function() {
+				$(this).siblings('a').removeClass('active');  // 删除其他兄弟元素的样式
+				$(this).addClass('active');                            // 添加当前元素的样式
+				localStorage.pagenum=0;
+				localStorage.newsType = $(this).attr("id");
+				newLoadNews();
+			});
+			newLoadNews();
+		});
+
+
+	</script>
+</head>
+<body class="index">
+
+<div class="fake-header"></div>
+
+<header class="navbar-fixed-top">
+	<div class=" am-container navbar " id="newsType">
+	<!-- active 的意思是当前位置 -->
+		<a href="#" class="active" id="00">重要新闻</a>
+		<a href="#" id="46">重大科研</a>
+		<a href="#" id="47">重大学术</a>
+		<a href="#" id="51">获奖成果</a>
+		<a href="#" id="53">招生就业</a>
+	<div class="input-group search">
+		<input id="txtKey" type="text" class="form-control" placeholder="Search for...">
+	<span class="input-group-btn">
+		<button id="btnGo" class="btn btn-default" type="button">Go!</button>
+	</span>
+	</div>
+		
+		<div class="clear"></div>
+	</div>
+	<div class="clear"></div>
+</header>
+
+<div class="wrapper am-g am-g-fixed am-container">
+
+	<div class="main">
+		<ul id="content" class="list-group no-radius">
+		</ul>
+
+		<!--显示页数-->
+		<nav>
+			<ul id="pages" class="pagination">
+				<li>
+					<a href="#" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
+					</a>
+				</li>
+				<li><a href="#">1</a></li>
+				<li class="active"><a href="#">2</a></li>
+				<li><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+				<li><a href="#">5</a></li>
+				<li><a href="#">...</a></li>
+				<li><a href="#">10</a></li>
+				<li>
+					<a href="#" aria-label="Next">
+						<span aria-hidden="true">&raquo;</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+
+
+	</div>
+</div>
+
+<footer>
+	
+</footer>
+
+<script src="./static/js/jquery.min.js"></script>
+<script src="./static/js/amazeui.min.js"></script>
+<script src="./static/js/bootstrap.min.js"></script>
+</body>
+</html>

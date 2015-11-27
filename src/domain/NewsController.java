@@ -46,11 +46,16 @@ public  class NewsController {
 					Element link=row.select("a").first();
 					News news=new News(link.attr("href"),link.attr("title"),"","");
 					newsList.add(news);
-					System.out.println(news.getId());
 				}
 			}else{
-				System.out.println("catexxx");
 				Document doc = Jsoup.connect("http://news.cqu.edu.cn/news/article/list.php?catid="+categoryId).get();
+
+				/**获取页码*/
+				Elements page=doc.select("div.pages");
+				Element p=page.select("b").last();
+				String pageNum=p.text().substring(p.text().indexOf("/")+1);
+				System.out.println("pageNumber:"+pageNum);
+				//有缩略图,只在第一页中添加到列表，其他页码下不再重复添加
 				Elements liphoto = doc.select("div.liphoto div.row1");
 				for(Element row:liphoto)
 				{
@@ -58,14 +63,38 @@ public  class NewsController {
 					Element img=row.select("img").first();
 					News news=new News(link.attr("href"),img.attr("alt"),"","http://news.cqu.edu.cn/"+img.attr("src"));
 					newsList.add(news);
-					System.out.println(news.getId());
 				}
+
+				//将每一页中新闻添加到newslist
+				for(int i=1;i<=Integer.parseInt(pageNum);i++)
+				{
+//					System.out.println("页码："+i);
+					//无缩略图
+					Document doc1 = Jsoup.connect("http://news.cqu.edu.cn/news/article/list.php?catid="+categoryId+"&page="+i).get();
+					Elements linews = doc1.select("div.linews li.tag_title");
+					for(Element row:linews)
+					{
+						Element link=row.select("a").first();
+//					Element img=row.select("img").first();
+						News news=new News(link.attr("href"),link.attr("title"),"","");
+						newsList.add(news);
+					}
+				}
+//				//无缩略图
+//				Elements linews = doc.select("div.linews li.tag_title");
+//				for(Element row:linews)
+//				{
+//					Element link=row.select("a").first();
+////					Element img=row.select("img").first();
+//					News news=new News(link.attr("href"),link.attr("title"),"","");
+//					newsList.add(news);
+//				}
+
+
 			}
 		} catch (IOException e) {
-			System.out.println("error");
 			e.printStackTrace();
 		}
-		System.out.println(newsList.size());
 		return newsList;
 	}
 
@@ -114,6 +143,10 @@ public  class NewsController {
 		try {
 			Document doc = Jsoup.connect("http://news.cqu.edu.cn"+newsId).get();
 			news.setTitle(doc.select("div.title h1").first().text());
+			news.setDate(doc.select("div.clear.author span.datetime").text());
+			String author=doc.select("div.clear.author").text();
+			author=author.substring(author.indexOf("作者：")+3,author.indexOf("作者：")+8).replaceAll(" ","");
+			news.setAuthor(author);
 			Element content=doc.select("#zoom").first();
 			Elements imgs=doc.select("img");
 			for(Element img:imgs)

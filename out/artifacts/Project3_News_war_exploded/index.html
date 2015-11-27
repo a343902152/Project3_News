@@ -18,14 +18,13 @@
 		localStorage.newsType ="00";
 		localStorage.newsId="";
 		localStorage.searchKey="";
-
 		/**
 		 * 根据输入的关键字，搜索新闻
 		 */
 		function searchNews(){
 			$.ajax({
 				url:"controller",
-				type:"GET",
+				type:"POST",
 				data:{
 					"action":"serachNews",
 					"key":localStorage.searchKey
@@ -36,8 +35,9 @@
 					var jsonObj=eval("("+data+")");
 					$.each(jsonObj, function (i, item) {
 						var id=jsonObj[i].id;
+						var loaction=str.substr(0,num);//问号之前的URL
 						var title=jsonObj[i].title;
-						var link="<li><a id=\'"+id+"\' class=\"list-group-item\" href=\"newsDetail.html\">"+title+
+						var link="<li><a id=\'"+id+"\' class=\"list-group-item\" href=\"detail.html\">"+title+
 								"</a></li>";
 						$("#content").append(link);
 					});
@@ -60,7 +60,7 @@
 		function newLoadNews(){
 			$.ajax({
 				url:"controller",
-				type:"GET",
+				type:"POST",
 				data:{
 					"action":"getNewsList",
 					"newsType":localStorage.newsType
@@ -71,8 +71,8 @@
 					$.each(jsonObj, function (i, item) {
 						var id=jsonObj[i].id;
 						var title=jsonObj[i].title;
-						var link="<li><a id=\'"+id+"\' class=\"list-group-item\" href=\"newsDetail.html\">"+title+
-										"</a></li>";
+						var link="<li><a id=\'"+id+"\' class=\"list-group-item\" href=\"detail.html\">"+title+
+								"</a></li>";
 						$("#content").append(link);
 					});
 					$("a").click(function () {
@@ -86,15 +86,12 @@
 		}
 
 		$(document).ready(function() {
-//			alert("ready");
 			$("#btnGo").click(function(){
 				localStorage.searchKey=$("#txtKey").val();
-//				alert(localStorage.searchKey);
 				searchNews();
 			});
 			$(".active").click(function(){
 				localStorage.newsType = $(this).attr("id");
-//				alert(localStorage.newsType);
 				newLoadNews();
 			});
 			newLoadNews();
@@ -111,9 +108,9 @@
 
 	<div class=" am-container navbar "  >
 		<a href="#" class="logo"><img src=""></a>
-		<a href="#" class="active" id="00">标题测试标</a>
-		<a href="#" class="active" id="46">标题测试</a>
-		<a href="#" class="active" id="53">标题测试标题</a>
+		<a href="#" class="active" id="00">重要新闻</a>
+		<a href="#" class="active" id="46">重大科研</a>
+		<a href="#" class="active" id="53">招生就业</a>
 
     <div class="input-group search">
 		<input id="txtKey" type="text" class="form-control" placeholder="Search for...">
