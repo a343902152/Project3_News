@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="./static/css/bootstrap.min.css">
 	<link rel="stylesheet" href="./static/css/amazeui.min.css">
 	<link rel="stylesheet" href="./static/css/main.css">
+	<link rel="stylesheet" href="./static/css/loading.css">
 
 	<script type="text/javascript" src="JS/jquery-1.9.1.js"></script>
 	<script type="text/javascript">
@@ -38,16 +39,107 @@
 		 * 计算总的页数、当前页数
 		 */
 		function getPages(){
+			var max_pagecount=10;// 最多显示10个标签,比如 1 2 3 4 5 6 7 8 ... 100
 			// 动态添加页数
-			var pagescount=15;
 			$("#pages").empty();
-			for(var i=0;i<pagescount;i++){
-				if(i==localStorage.pagenum){
-					var link="<li class=\"active\"><a id=\'"+i+"\' href=\"#\">"+(i+1)+"</a></li>";
-				}else{
-					var link="<li id=\'"+i+"\'><a href=\"#\">"+(i+1)+"</a></li>";
+			// 如果标签数小于10，就直接显示
+//			for (var i = 0; i < localStorage.pageCount; i++) {
+//				if (i == localStorage.pagenum) {
+//					var link = "<li class=\"active\"><a id=\'" + i + "\' href=\"#\">" + (i + 1) + "</a></li>";
+//				} else {
+//					var link = "<li id=\'" + i + "\'><a href=\"#\">" + (i + 1) + "</a></li>";
+//				}
+//				$("#pages").append(link);
+//			}
+
+
+			if(localStorage.pageCount<max_pagecount) {
+				// 页数小于等于10的情况
+				for (var i = 0; i < localStorage.pageCount; i++) {
+					if (i == localStorage.pagenum) {
+						var link = "<li class=\"active\"><a id=\'" + i + "\' href=\"#\">" + (i + 1) + "</a></li>";
+					} else {
+						var link = "<li id=\'" + i + "\'><a href=\"#\">" + (i + 1) + "</a></li>";
+					}
+					$("#pages").append(link);
 				}
-				$("#pages").append(link);
+			}else{
+//				// 总页数大于10的情况
+				// region # plan A
+				//				if(localStorage.pagenum<4){
+//					// 画1~min(10,pagecount)
+//					for(var i=0;i<max_pagecount;i++){
+//						if(i==localStorage.pagenum){
+//							var link="<li class=\"active\"><a id=\'"+i+"\' href=\"#\">"+(i+1)+"</a></li>";
+//						}else if(i==8){
+//							var link="<li><a href=\"#\">"+".."+"</a></li>";
+//
+//						}else if(i==9){
+//							var link="<li id=\'"+localStorage.pageCount+"\'>" +
+//									"<a href=\"#\">"+(localStorage.pageCount+2)+"</a></li>";
+//						}
+//						else{
+//							var link="<li id=\'"+i+"\'><a href=\"#\">"+(i+1)+"</a></li>";
+//						}
+//						$("#pages").append(link);
+//					}
+//				}else if(localStorage.pagenum>localStorage.pageCount-3){
+//					// if pagecount<10,画1~pagecount
+//					// else if pagecount>=10,话(pagecount-10)~pagecount
+//					// 画 max(1,pagecount-9)~pagecount
+//				}else{
+//					// 画 1... curpage-1,curpage,curpage+1……curpage+4,...,max
+//					for(var i=0;i<max_pagecount;i++){
+//						if(i==4){
+//							var link="<li class=\"active\"><a href=\"#\">"+localStorage.pagenum+1+"</a></li>";
+//						}else if(i==8){
+//							var link="<li id=\'"+i+"\'><a href=\"#\">"+".."+"</a></li>";
+//						}else if(i==9){
+//							var link="<li id=\'"+localStorage.pageCount+"\'><a href=\"#\">"+localStorage.pageCount+"</a></li>";
+//						}else if(i==0){
+//							var link="<li id=\'"+0+"\'><a href=\"#\">"+"1"+"</a></li>";
+//						}else if(i==1){
+//							var link="<li ><a href=\"#\">"+"..."+"</a></li>";
+//						}
+//						else{
+//							var link="<li id=\'"+(localStorage.pagenum+i-4)+"\'><a href=\"#\">"+(localStorage.pagenum+i-3)+"</a></li>";
+//						}
+//						$("#pages").append(link);
+//					}
+//				}
+				// endregion
+   				// region #plan B
+				if(localStorage.pagenum<4){
+					for(var i=0;i<max_pagecount;i++){
+						if(i==localStorage.pagenum){
+							var link="<li class=\"active\"><a id=\'"+i+"\' href=\"#\">"+(i+1)+"</a></li>";
+						}else{
+							var link="<li id=\'"+i+"\'><a href=\"#\">"+(i+1)+"</a></li>";
+						}
+						$("#pages").append(link);
+					}
+				}else if(localStorage.pagenum>(localStorage.pageCount-5)){
+					var temp=localStorage.pageCount-10;
+					for(var i=0;i<max_pagecount;i++){
+						if(i==localStorage.pagenum-temp){
+							var link="<li class=\"active\"><a id=\'"+i+"\' href=\"#\">"+((i+1)+temp)+"</a></li>";
+						}else{
+							var link="<li id=\'"+(i+temp)+"\'><a href=\"#\">"+((i+1)+temp)+"</a></li>";
+						}
+						$("#pages").append(link);
+					}
+				}else{
+					var temp=localStorage.pagenum-4;
+					for(var i=0;i<max_pagecount;i++){
+						if(i==localStorage.pagenum-temp){
+							var link="<li class=\"active\"><a id=\'"+i+"\' href=\"#\">"+(i+1+temp)+"</a></li>";
+						}else{
+							var link="<li id=\'"+(i+temp)+"\'><a href=\"#\">"+(i+1+temp)+"</a></li>";
+						}
+						$("#pages").append(link);
+					}
+				}
+				// endregion
 			}
 			// 关于点击页标的
 			$("#pages li").click(function() {
@@ -63,12 +155,13 @@
 		localStorage.newsType ="00";
 		localStorage.newsId="";
 		localStorage.searchKey="";
-		localStorage.pagenum=0;
-
+		localStorage.pagenum=0; // 当前页数
+		localStorage.pageCount=0; // 总的页数
 		/**
 		 * 根据输入的关键字，搜索新闻
 		 */
 		function searchNews(){
+			$("#loading").show();
 			$.ajax({
 				url:"controller",
 				type:"POST",
@@ -77,11 +170,14 @@
 					"key":localStorage.searchKey
 				},
 				success:function(data){
+					$("#loading").hide();
+					alert(data);
 					newsJsonToHtml(data);
 					$("#pages").empty();
-//					getPages();
 				},
 				error: function(){
+					$("#loading").hide();
+
 					alert("请求失败，请稍候重试");
 				}
 			});
@@ -92,6 +188,7 @@
 		 *
 		 */
 		function loadnewsByPage(){
+			$("#loading").show();
 			$.ajax({
 				url:"controller",
 				type:"POST",
@@ -100,10 +197,12 @@
 					"pagenum":localStorage.pagenum
 				},
 				success:function(data){
+					$("#loading").hide();
 					newsJsonToHtml(data);
 					getPages();
 				},
 				error: function(){
+					$("#loading").hide();
 					alert("请求失败，请稍候重试");
 				}
 			});
@@ -122,6 +221,7 @@
 		 * @constructor
 		 */
 		function newLoadNews(){
+			$("#loading").show();
 			$.ajax({
 				url:"controller",
 				type:"POST",
@@ -130,17 +230,32 @@
 					"newsType":localStorage.newsType
 				},
 				success:function(data){
-					newsJsonToHtml(data);
+					$("#loading").hide();
+
+//					alert(data);
+					var pages;
+					var msg;
+					var json = eval(data); //数组
+					$.each(json, function (i, item) {
+						//获取数据
+						pages=json[i].pages;
+						msg=json[i].msg;
+//						alert(pages);
+						alert(msg);
+					});
+					localStorage.pageCount=pages;
+					newsJsonToHtml(msg);
 					getPages();
 				},
 				error: function(){
+					$("#loading").hide();
 					alert("请求失败，请稍候重试");
 				}
 			});
 		}
 
-
 		$(document).ready(function() {
+			$("#loading").hide();
 			$("#btnGo").click(function(){
 				localStorage.searchKey=$("#txtKey").val();
 				searchNews();
@@ -163,11 +278,14 @@
 <div class="fake-header"></div>
 
 <header class="navbar-fixed-top">
+
 	<div class=" am-container navbar " id="newsType">
 	<!-- active 的意思是当前位置 -->
+
 		<a href="#" class="active" id="00">重要新闻</a>
 		<a href="#" id="46">重大科研</a>
 		<a href="#" id="47">重大学术</a>
+		<a href="#" id="50">重大风采</a>
 		<a href="#" id="51">获奖成果</a>
 		<a href="#" id="53">招生就业</a>
 	<div class="input-group search">
@@ -176,7 +294,6 @@
 		<button id="btnGo" class="btn btn-default" type="button">Go!</button>
 	</span>
 	</div>
-		
 		<div class="clear"></div>
 	</div>
 	<div class="clear"></div>
@@ -185,29 +302,23 @@
 <div class="wrapper am-g am-g-fixed am-container">
 
 	<div class="main">
+		<div id="loading">
+			<div id="fountainG_1" class="fountainG"></div>
+			<div id="fountainG_2" class="fountainG"></div>
+			<div id="fountainG_3" class="fountainG"></div>
+			<div id="fountainG_4" class="fountainG"></div>
+			<div id="fountainG_5" class="fountainG"></div>
+			<div id="fountainG_6" class="fountainG"></div>
+			<div id="fountainG_7" class="fountainG"></div>
+			<div id="fountainG_8" class="fountainG"></div>
+			<div class="clear"></div>
+		</div>
 		<ul id="content" class="list-group no-radius">
 		</ul>
 
 		<!--显示页数-->
 		<nav>
 			<ul id="pages" class="pagination">
-				<li>
-					<a href="#" aria-label="Previous">
-						<span aria-hidden="true">&laquo;</span>
-					</a>
-				</li>
-				<li><a href="#">1</a></li>
-				<li class="active"><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
-				<li><a href="#">...</a></li>
-				<li><a href="#">10</a></li>
-				<li>
-					<a href="#" aria-label="Next">
-						<span aria-hidden="true">&raquo;</span>
-					</a>
-				</li>
 			</ul>
 		</nav>
 

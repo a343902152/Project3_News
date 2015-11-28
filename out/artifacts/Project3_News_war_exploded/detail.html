@@ -15,7 +15,6 @@
 
 	<script type="text/javascript" src="JS/jquery-1.9.1.js"></script>
 	<script type="text/javascript">
-
 		/**
 		 * 根据newsId读取新闻
 		 *
@@ -25,24 +24,6 @@
 		 * 		3. content
 		 */
 		$(document).ready(function() {
-//			var str=window.location.search;
-//			var ret=str.match(/\w+?\=.*?(?=($|\&))/g);
-//			if(!ret){
-//				return;
-//			}
-//			var param={},
-//					i=-1,
-//					len=ret.length,
-//					ar;
-//			for(;str=ret[++i];){
-//				ar=str.split('=');
-//				param[ar[0]]=ar[1];
-//			}
-//
-//			var newsid=param.itemid;
-//			if(newsid){
-//				alert("itemid："+newsid);
-//			}
 			$.ajax({
 				url:"controller",
 				type:"GET",
@@ -59,16 +40,18 @@
 					var author;
 					var date;
 					$.each(json, function (i, item) {
-						//循环获取数据
+						//获取数据
 						title=json[i].title;
 						content=json[i].content;
 						author=json[i].author;
 						date=json[i].date;
 					});
+
 					$("#title").html(title);
 					$("#content").html(content);
 					$("#newstitle1").html(title);
 					$("#newstitle2").html(title);
+					$("#newsauthor").html(author);
 					$("#newsdate").html(date);
 				},
 				error: function(){
@@ -82,27 +65,27 @@
 
 <div class="fake-header"></div>
 
-<header class="navbar-fixed-top">
-	<div class=" am-container navbar ">
+<!--<header class="navbar-fixed-top">-->
+	<!--<div class=" am-container navbar " id="newsType2">-->
+		<!--&lt;!&ndash; active 的意思是当前位置 &ndash;&gt;-->
 
-		<!-- TODO 注意type同步的问题-->
-		<a href="#" class="active" id="00">重要新闻</a>
-		<a href="#" id="46">重大科研</a>
-		<a href="#" id="47">重大学术</a>
-		<a href="#" id="51">获奖成果</a>
-		<a href="#" id="53">招生就业</a>
-		
-    <div class="input-group search">
-		<input type="text" class="form-control" placeholder="Search for...">
-		<span class="input-group-btn">
-			<button class="btn btn-default" type="button">Go!</button>
-		</span>
-    </div>
-		
-		<div class="clear"></div>
-	</div>
-	<div class="clear"></div>
-</header>
+		<!--<a class="active" id="00">重要新闻</a>-->
+		<!--<a  id="46">重大科研</a>-->
+		<!--<a id="47">重大学术</a>-->
+		<!--<a id="51">获奖成果</a>-->
+		<!--<a id="53">招生就业</a>-->
+		<!-- -->
+    <!--<div class="input-group search">-->
+		<!--<input type="text" class="form-control" placeholder="Search for...">-->
+		<!--<span class="input-group-btn">-->
+			<!--<button class="btn btn-default" type="button">Go!</button>-->
+		<!--</span>-->
+    <!--</div>-->
+		<!-- -->
+		<!--<div class="clear"></div>-->
+	<!--</div>-->
+	<!--<div class="clear"></div>-->
+<!--</header>-->
 
 <div class="wrapper am-g am-g-fixed am-container">
 
@@ -117,6 +100,7 @@
 			<div class ="panel-body">
 				<h4 id="newstitle2" class="title">标题</h4>
 				<div class="info">
+					<h3 id="newsauthor" class="time">作者</h3>
 					<h3 id="newsdate" class="time">发布时间</h3>
 
 					<div class="clear"></div>
@@ -124,8 +108,6 @@
 				<div id="content"></div>
 			</div>
 		</div>
-
-
 	</div>
 </div>
 

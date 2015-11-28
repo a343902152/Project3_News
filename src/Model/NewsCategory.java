@@ -1,5 +1,8 @@
-package domain;
+package Model;
 
+/**
+ * 新闻种类
+ */
 public class NewsCategory {
 	private String id;
 	private String name;

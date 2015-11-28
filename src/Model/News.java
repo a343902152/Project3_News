@@ -1,8 +1,9 @@
-package domain;
+package Model;
 
 
 /**
  * Created by lenovo on 2015/11/20.
+ * 新闻，包括id 标题，内容，作者等
  */
 public class News {
     private String id;

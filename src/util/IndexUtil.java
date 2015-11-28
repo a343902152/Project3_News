@@ -1,5 +1,6 @@
-package domain;
+package util;
 
+import Model.News;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
